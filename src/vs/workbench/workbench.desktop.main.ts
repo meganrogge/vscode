@@ -35,7 +35,6 @@ import 'vs/workbench/electron-browser/desktop.main';
 //#region --- workbench services
 
 import 'vs/workbench/services/integrity/node/integrityService';
-import 'vs/workbench/services/textMate/electron-browser/textMateService';
 import 'vs/workbench/services/search/electron-browser/searchService';
 import 'vs/workbench/services/output/electron-browser/outputChannelModelService';
 import 'vs/workbench/services/textfile/electron-browser/nativeTextFileService';
@@ -61,11 +60,9 @@ import { ICredentialsService } from 'vs/platform/credentials/common/credentials'
 import { KeytarCredentialsService } from 'vs/platform/credentials/node/credentialsService';
 import { ITunnelService } from 'vs/platform/remote/common/tunnel';
 import { TunnelService } from 'vs/platform/remote/node/tunnelService';
-import { IUserDataInitializationService, UserDataInitializationService } from 'vs/workbench/services/userData/browser/userDataInit';
 
 registerSingleton(ICredentialsService, KeytarCredentialsService, true);
 registerSingleton(ITunnelService, TunnelService);
-registerSingleton(IUserDataInitializationService, UserDataInitializationService);
 
 //#endregion
 
@@ -105,9 +102,6 @@ import 'vs/workbench/contrib/performance/electron-browser/performance.contributi
 
 // CLI
 import 'vs/workbench/contrib/cli/node/cli.contribution';
-
-// Themes Support
-import 'vs/workbench/contrib/themes/test/electron-browser/themes.test.contribution';
 
 // Tasks
 import 'vs/workbench/contrib/tasks/electron-browser/taskService';
