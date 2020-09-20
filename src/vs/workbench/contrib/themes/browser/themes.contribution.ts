@@ -2,7 +2,6 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-
 import { localize } from 'vs/nls';
 import { Action } from 'vs/base/common/actions';
 import { KeyMod, KeyChord, KeyCode } from 'vs/base/common/keyCodes';
@@ -99,6 +98,29 @@ export class SelectColorThemeAction extends Action {
 				quickpick.show();
 			});
 		});
+	}
+}
+
+export class ToggleColorThemeAction extends Action {
+
+	static readonly ID = 'workbench.action.toggleTheme';
+	static readonly LABEL = localize('toggleTheme.label', "Toggle Color Theme");
+
+	constructor(
+		id: string,
+		label: string,
+		@IWorkbenchThemeService private readonly themeService: IWorkbenchThemeService,
+	) {
+		super(id, label);
+
+		let currentTheme = this.themeService.getColorTheme();
+		//let toggleColorThemes = vscode.workspace.getConfiguration('toggleColorThemes');
+		let themeOptions = ['Dark (Visual Studio)', 'Light (Visual Studio)'];
+		if (currentTheme.id === themeOptions[0]) {
+			this.themeService.setColorTheme(themeOptions[1], undefined);
+		} else {
+			this.themeService.setColorTheme(themeOptions[0], undefined);
+		}
 	}
 }
 
