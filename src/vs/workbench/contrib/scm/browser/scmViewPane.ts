@@ -1308,16 +1308,18 @@ class SCMInputWidget extends Disposable {
 		// Keep model in sync with API
 		let textValue = input.value;
 		let storedValue = this.storageService.get(`scm.text`, StorageScope.WORKSPACE);
-		textModel.setValue(textValue);
+
+		if (storedValue && textValue === '') {
+			textModel.setValue(storedValue);
+		} else {
+			textModel.setValue(textValue);
+		}
+
 		this.repositoryDisposables.add(input.onDidChange(value => {
 			if (value === textModel.getValue()) { // circuit breaker
-				return;
-			}
-			if (value !== '') {
 				this.storageService.store(`scm.text`, input.value, StorageScope.WORKSPACE);
 				textModel.setValue(value);
-			} else if (storedValue) {
-				textModel.setValue(storedValue);
+				return;
 			}
 			this.inputEditor.setPosition(textModel.getFullModelRange().getEndPosition());
 		}));
