@@ -112,15 +112,21 @@ export class ToggleColorThemeAction extends Action {
 		@IWorkbenchThemeService private readonly themeService: IWorkbenchThemeService,
 	) {
 		super(id, label);
-
-		let currentTheme = this.themeService.getColorTheme();
-		//let toggleColorThemes = vscode.workspace.getConfiguration('toggleColorThemes');
-		let themeOptions = ['Dark (Visual Studio)', 'Light (Visual Studio)'];
-		if (currentTheme.id === themeOptions[0]) {
-			this.themeService.setColorTheme(themeOptions[1], undefined);
-		} else {
-			this.themeService.setColorTheme(themeOptions[0], undefined);
-		}
+	}
+	run(): Promise<void> {
+		return new Promise<void>(() => {
+			let currentTheme = this.themeService.getColorTheme();
+			//let toggleColorThemes = vscode.workspace.getConfiguration('toggleColorThemes');
+			// if(!toggleColorThemes) alert confirgure toggle-able color themes in settings
+			let themeOptions = ['Quiet Light', 'Dark (Visual Studio)'];
+			if (currentTheme.label === themeOptions[0]) {
+				this.themeService.setColorTheme(themeOptions[1], undefined);
+			} else if (currentTheme.label === themeOptions[1]) {
+				this.themeService.setColorTheme(themeOptions[0], undefined);
+			} else {
+				// alert not a toggle-able theme. configure in settings
+			}
+		});
 	}
 }
 
@@ -357,12 +363,14 @@ const category = localize('preferences', "Preferences");
 const colorThemeDescriptor = SyncActionDescriptor.from(SelectColorThemeAction, { primary: KeyChord(KeyMod.CtrlCmd | KeyCode.KEY_K, KeyMod.CtrlCmd | KeyCode.KEY_T) });
 Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions).registerWorkbenchAction(colorThemeDescriptor, 'Preferences: Color Theme', category);
 
+const colorThemeToggle = SyncActionDescriptor.from(ToggleColorThemeAction, { primary: KeyChord(KeyMod.CtrlCmd | KeyCode.Alt, KeyMod.CtrlCmd | KeyCode.KEY_T) });
+Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions).registerWorkbenchAction(colorThemeToggle, 'Preferences: Toggle Color Theme', category);
+
 const fileIconThemeDescriptor = SyncActionDescriptor.from(SelectFileIconThemeAction);
 Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions).registerWorkbenchAction(fileIconThemeDescriptor, 'Preferences: File Icon Theme', category);
 
 const productIconThemeDescriptor = SyncActionDescriptor.from(SelectProductIconThemeAction);
 Registry.as<IWorkbenchActionRegistry>(Extensions.WorkbenchActions).registerWorkbenchAction(productIconThemeDescriptor, 'Preferences: Product Icon Theme', category);
-
 
 const developerCategory = localize({ key: 'developer', comment: ['A developer on Code itself or someone diagnosing issues in Code'] }, "Developer");
 
@@ -392,6 +400,15 @@ MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
 	command: {
 		id: SelectColorThemeAction.ID,
 		title: localize('selectTheme.label', "Color Theme")
+	},
+	order: 1
+});
+
+MenuRegistry.appendMenuItem(MenuId.GlobalActivity, {
+	group: '4_themes',
+	command: {
+		id: ToggleColorThemeAction.ID,
+		title: localize('toggleTheme.label', "Toggle Color Theme")
 	},
 	order: 1
 });
